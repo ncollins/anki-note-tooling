@@ -1,0 +1,18 @@
+# One note per distinct substitution, each highlighting the word it tests.
+[recipe]
+name     = "phrase"
+deck     = "Example Phrase Deck"
+model    = "Example Phrase"
+for_each = "substitution"
+# No `default_group_by`: substitutions group only when identical in every slot, or when an
+# explicit `#tag` says so.
+active   = """<font color="#0000ff">$written</font>"""   # the focused substitution
+inactive = "$written"                                    # all the others
+tags     = ["$source_tag"]
+
+  [recipe.fields]
+  Text        = "$note_text"
+  Reading     = "$reading"      # slot variables refer to the focused substitution
+  Image       = "$image"
+  Audio       = "$audio"
+  Translation = "$english_line"

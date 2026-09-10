@@ -1,0 +1,8 @@
+{% import 'fl_line/macros.html.j2' as macros %}
+
+{{ macros.basic_image(image=image_file_override, form_param_name="image-file", source_id=source_id) }}
+
+<input hx-swap-oob="true" 
+    type="text" 
+    id="update-form-image-file"
+    name="update-form-image-file" value="{{image_file_override}}" />

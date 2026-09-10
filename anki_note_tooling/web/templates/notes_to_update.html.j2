@@ -1,0 +1,23 @@
+{% extends "base.html.j2" %}
+{% block content %}
+<table>
+    <thead>
+        <tr>
+            <th>Text</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for line in updated_lines %}
+        <tr>
+            <td>{{line.annotated_text}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<form action="/update_anki_notes" method="post" enctype="multipart/form-data">
+    <div class="row padding-small">
+        <button class="btn-success">Update all</button>
+    </div>
+</form>
+{% endblock content %}

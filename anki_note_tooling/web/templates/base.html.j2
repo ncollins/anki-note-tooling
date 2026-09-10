@@ -1,0 +1,31 @@
+<!doctype html>
+
+<head>
+    <title>Anki Note Tooling</title>
+    <script src="/static/htmx-1.9.5.min.js"></script>
+    <!-- fonts.css first: it declares the faces paper-1.9.2.min.css then asks for. -->
+    <link rel="stylesheet" href="/static/fonts.css" />
+    <link rel="stylesheet" href="/static/paper-1.9.2.min.css" />
+</head>
+
+<body>
+    <nav class="border fixed">
+        <div class="nav-brand">
+            <h2><a href="/">Home</a></h2>
+        </div>
+        <div class="collapsible">
+            <div class="collapsible-body">
+                <ul class="inline">
+                    <li><a href="/search">Search</a></li>
+                    <li><a href="/inserted">List inserted</a></li>
+                    <li><a href="/notes_to_insert">Notes to insert</a></li>
+                    <li><a href="/notes_to_update">Notes to update</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="paper">
+        {% block content %}{% endblock %}
+    </div>
+</body>

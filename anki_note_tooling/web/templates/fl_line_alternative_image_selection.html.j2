@@ -1,0 +1,23 @@
+<div id="image-picker">
+<form hx-get="/fl_line_alternative_image_selection/{{source_id}}" hx-target="#image-picker" hx-swap="outerHTML">
+    <input type="search" name="filter" value="{{name_filter}}" placeholder="Filter images"
+        autocomplete="off" hx-trigger="keyup changed delay:300ms, search" />
+</form>
+
+{% if total > images|length %}
+<p>Showing {{images|length}} of {{total}}. Use the filter to narrow the list.</p>
+{% endif %}
+
+<div class="row">
+{% for image in images %}
+<div class="col-4 col">
+<img src="/audio_file/{{image.image}}"
+    alt="{{image.label}}"
+    title="{{image.label}}"
+    hx-get="/fl_line_form_image_override?image-file-override={{image.image}}&source_id={{source_id}}"
+    hx-target="#image-wrapper"
+    onclick="document.getElementById('image-select-modal-state').click()" />
+</div>
+{% endfor %}
+</div>
+</div>

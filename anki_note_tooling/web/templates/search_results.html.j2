@@ -1,0 +1,39 @@
+<div>
+    {% if query %}<p>Query was: {{query}}</p>{% endif %}
+    {% if filter_summary %}<p>Filters: {{ filter_summary | join('; ') }}</p>{% endif %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Source Type</th>
+                <th>Source File</th>
+                <th>Line</th>
+                <th>Audio</th>
+                <th>Inserted in Anki</th>
+                <!--
+            <th>Select</th>
+            -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in results %}
+            <tr>
+                <td>{{row[0]}}</td>
+                <td>{{row[1]}}</td>
+                <td>{{row[2]}}</td>
+                <td><a href="/fl_line_details/{{row[0]}}" target="_">{{row[3]}}</a></td>
+                <td><audio controls src="/audio_file/{{row[4]}}"></audio></td>
+                <td>{{"*" if row[5] else ""}}</td>
+                <!--
+            <td><input type="checkbox" id="Row-{{row[0]}}" name="Row-{{row[0]}}" /></td>
+            -->
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div>
+        {% if prev_url %}<a href="{{ prev_url }}">« Previous</a>{% endif %}
+        {% if next_url %}<a href="{{ next_url }}">Next »</a>{% endif %}
+    </div>
+</div>

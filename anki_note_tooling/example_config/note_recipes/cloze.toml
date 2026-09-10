@@ -1,0 +1,19 @@
+# One cloze note per line: every annotated substitution becomes a blank to fill in.
+[recipe]
+name     = "cloze"
+deck     = "Example Cloze Deck"
+model    = "Example Cloze"
+for_each = "line"
+# `for_each = "line"` means every substitution is active, so there is no `inactive`
+# template. `$n` is the cloze number, assigned by the renderer.
+active   = "{{c$n::$written::$reading}}"
+tags     = ["$source_tag"]
+
+# Keyed by real Anki field name. Fields the model has but this recipe does not name are
+# left untouched, so anything typed into them inside Anki survives an update.
+  [recipe.fields]
+  Expression     = "$note_text"
+  Audio          = "$audio"
+  Images         = "$image"
+  Translation    = "$english_line"
+  Raw_expression = "$line_text"

@@ -1,0 +1,72 @@
+# Example configuration for anki-note-tooling.
+#
+# `anki-note-tooling config init <dir>` writes a copy of this file, the sources and recipes
+# beside it, and an empty database. Commands look in `~/.config/anki-note-tooling/` unless you
+# pass `--config-dir`, so that is the usual place to put it.
+#
+# Every path here is a placeholder — nothing works until you change them.
+#
+# The `sources/` and `note_recipes/` directories beside this file are the other half of the
+# configuration: they decide which notes a line produces. See the files in them.
+#
+# Check your edits with:
+#
+#     anki-note-tooling config validate
+#     anki-note-tooling sources validate
+
+
+[database]
+
+# The SQLite database holding your lines and the record of which notes came from them.
+# A relative path is resolved against this config directory, so the default below puts the
+# database next to this file. An absolute path is used as given.
+# Create it once with `anki-note-tooling tables create-db`.
+sqlite_file = "db.db"
+
+# Log every SQL statement. Useful when a query is not returning what you expect; noisy
+# otherwise.
+echo_queries_in_log = false
+
+
+[fs]
+
+# The root of everything this tool stores. Media locations are recorded in the database
+# *relative to this path*, so moving your files later means changing only this line — but
+# changing it to a different tree orphans every media reference you already have.
+files_path = "/home/you/anki-note-tooling"
+
+# Where media that belongs to a stored line is kept. Audio and images are copied here when a
+# line is loaded, so that a line points at this tool's own copy rather than at wherever the
+# file happened to be when you imported it.
+managed_language_learning_files = "/home/you/anki-note-tooling/media"
+
+# Scratch space for files uploaded through the web UI, before you commit to them. A file
+# picked in the UI is moved from here into the directory above.
+tmp_files = "/home/you/anki-note-tooling/tmp"
+
+# Both directories above must sit inside `files_path`; loading the config fails if they do
+# not, because a file outside it could be written but never read back.
+
+
+[anki]
+
+# Your Anki *profile* directory — the one containing `collection.anki2` and
+# `collection.media`, not the folder above it that holds all profiles.
+#
+# Typical locations:
+#   Linux    ~/.local/share/Anki2/User 1
+#   macOS    ~/Library/Application Support/Anki2/User 1
+#   Windows  %APPDATA%\Anki2\User 1
+#
+# Anki must be closed when a command writes to the collection; commands that do will refuse
+# to run rather than risk corrupting it. Point this at a copy of your collection while you
+# are still finding your feet.
+profile_dir = "/home/you/.local/share/Anki2/User 1"
+
+
+[web]
+
+# Run the web UI with Flask's debug server, which reloads on edit and shows tracebacks in the
+# browser. Leave it off for normal use: `anki-note-tooling web-server start` then serves on
+# 127.0.0.1:5000 through a production server instead.
+debug_server = false

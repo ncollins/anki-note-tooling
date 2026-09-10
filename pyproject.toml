@@ -1,0 +1,66 @@
+[project]
+name = "anki-note-tooling"
+version = "0.1.0"
+description = "Build Anki flashcards from source lines, with config-driven note recipes"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE", "licenses/*", "THIRD-PARTY-NOTICES.md"]
+requires-python = ">=3.12.12,<3.13"
+dependencies = [
+    "anki==24.6.3",
+    "cheroot==10.0.1",
+    "Flask==3.0.3",
+    "Werkzeug>=3.0",
+    "jsons==1.6.3",
+    "pydantic==2.9.2",
+    "rich==13.9.2",
+    "typer==0.24.1",
+    "SQLAlchemy==2.0.36",
+]
+
+[dependency-groups]
+dev = [
+    "hypothesis>=6.165.10",
+    "ipython>=9.16.0",
+    "ipdb==0.13.13",
+    "mypy==1.12.1",
+    "mypy-extensions==1.0.0",
+    "pytest==8.3.3",
+    "pytest-cov==6.1.1",
+    "ruff==0.9.10",
+    "ty==0.0.17"
+]
+
+[project.scripts]
+anki-note-tooling = "anki_note_tooling.cli:main"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.format]
+exclude = ["*.md"]
+
+[tool.ruff.lint]
+# Select specific rule groups (e.g., Pyflakes, Pycodestyle, Isort)
+#select = ["E", "F", "I", "UP"]
+select = ["I"]
+
+[tool.pytest.ini_options]
+addopts = [
+    "--doctest-modules",
+]
+testpaths = [
+    "anki_note_tooling",
+    "tests",
+]
+pythonpath = ["anki_note_tooling"] 
+
+[build-system]
+requires = ["uv_build>=0.12.1,<0.13"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+# The package sits at the project root rather than under src/.
+module-name = "anki_note_tooling"
+module-root = ""

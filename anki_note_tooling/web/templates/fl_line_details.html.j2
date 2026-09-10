@@ -1,0 +1,121 @@
+{% extends "base.html.j2" %}
+{% block content %}
+
+{% import 'fl_line/macros.html.j2' as macros %}
+
+<h1>Add data to line</h1>
+
+<h3>{{text}}
+    <span id="starred" hx-get="/toggle_starred/{{source_id}}" target="#starred" style="color:goldenrod">
+        {% if is_starred %}
+        ★
+        {% else %}
+        ☆
+        {% endif %}
+    </span>
+</h3>
+
+<p>{{source_id}}</p>
+<p>{{source_type}}</p>
+<p>{{source_file}}</p>
+<!--
+<p>{{misc}}</p>
+<p>{{audio}}</p>
+-->
+
+<div id="audio-wrapper">
+{{ macros.audio_box(audio) }}
+</div>
+
+
+{{ macros.upload_tmp_file(file_category="audio-file", source_id=source_id) }}
+
+
+<div id="image-wrapper">
+{{ macros.basic_image(image, "image-file", source_id)}}
+</div>
+
+{{ macros.upload_tmp_file(file_category="image-file", source_id=source_id) }}
+
+
+{% if unconfigured_source %}
+<div class="row">
+    <p class="text-danger">
+        No source definition for <code>{{source_type}}</code>. Add
+        <code>sources/{{source_type}}.toml</code> to configure the notes and images it makes.
+    </p>
+</div>
+{% endif %}
+
+{% if has_image_picker %}
+
+<div class="row border border-danger">
+    <label hx-get="/fl_line_alternative_image_selection/{{source_id}}" hx-target="#image-select-modal-div"
+        class="paper-btn margin" for="image-select-modal-state">
+        Image Selection
+    </label>
+</div>
+
+<input class="modal-state" id="image-select-modal-state" type="checkbox">
+
+<div class="modal" id="image-select-modal-id" >
+    <label class="modal-bg" for="image-select-modal-state"></label>
+    <div class="modal-body" style="max-height: 80vh; background: gainsboro; overflow-y: auto;">
+        <label class="btn-close" for="image-select-modal-state">X</label>
+        <h4 class="modal-title">Alternative images</h4>
+        <div id="image-select-modal-div"></div>
+    </div>
+</div>
+
+{% endif %}
+
+
+
+<h4>Update fields</h4>
+<form action="/post/update_line/{{source_id}}" method="post" enctype="multipart/form-data">
+    <div class="row padding-small">
+        <label>Annotated Text:</label>
+        {# A rejected save comes back with the editor open, holding what was typed. #}
+        {% if editing_annotation %}
+        {{ macros.editable_text(text=(annotated_text or text), form_param_name=form_param_name,
+                          source_id=source_id, error=annotation_error)}}
+        {% else %}
+        {{ macros.uneditable_text(text=(annotated_text or text), form_param_name=form_param_name,
+                          source_id=source_id, error=annotation_error)}}
+        {% endif %}
+    </div>
+
+    <input type="text" id="update-form-image-file" name="update-form-image-file" value="{{image}}">
+
+    <input type="text" id="update-form-audio-file" name="update-form-audio-file" value="{{audio}}">
+
+    <div class="row padding-small">
+        {# Enabled as rendered, including on the rejection page: the live check is the only
+           thing that disables it, so the server stays reachable without htmx. #}
+        <button id="save-annotation" class="btn-success">Save</button>
+    </div>
+</form>
+
+<br>
+
+
+<h4>Existing Notes</h4>
+
+<table>
+    <thead>
+        <tr><th>Ref</th><th>Deck</th><th>Anki note</th><th>Text</th></tr>
+    </thead>
+    <tbody>
+        {% for note in notes %}
+        <tr>
+            <td>{{note.ref}}</td>
+            <td>{{note.record.get("deck", "")}}</td>
+            <td>{{note.anki_note_id}}</td>
+            <td>{{note.text}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+{% endblock %}

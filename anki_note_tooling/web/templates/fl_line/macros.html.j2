@@ -1,0 +1,77 @@
+{# Always rendered, so the id the live check swaps against exists in every editor state. #}
+{% macro annotation_error(error) -%}
+<p id="annotation-error" class="text-danger">{% if error %}{{error}}{% endif %}</p>
+{%- endmacro %}
+
+
+{% macro uneditable_text(text, form_param_name, source_id, error=None) -%}
+<div id="div-{{form_param_name}}">
+    <div class="row">
+        <div class="col-4 col">
+            <p>{{text}}</p>
+        </div>
+        <div class="col-4 col">
+            <label hx-get="/fl_line_text_editable/{{source_id}}"
+                hx-target="#div-{{form_param_name}}" class="paper-btn margin">Edit</label>
+        </div>
+    </div>
+    {{ annotation_error(error) }}
+</div>
+{%- endmacro %}
+
+
+{# The annotation is checked as it is typed by posting it to the server, which parses it
+   with `anki_note_tooling.notes.annotation` — the same call the save path makes. `hx-params` keeps
+   each keystroke to the annotation alone; htmx would otherwise send every input of the
+   enclosing form on a non-GET request. #}
+{% macro editable_text(text, form_param_name, source_id, error=None) -%}
+<div id="div-{{form_param_name}}">
+    <div class="row">
+        <div class="col-4 col">
+            <textarea id="{{form_param_name}}" name="{{form_param_name}}" rows=3 cols=40
+                hx-post="/fl_line_validate_annotation/{{source_id}}"
+                hx-trigger="input changed delay:300ms"
+                hx-params="{{form_param_name}}"
+                hx-target="#annotation-error"
+                hx-swap="outerHTML">{{text}}</textarea>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-4 col">
+            <label hx-get="/fl_line_text_uneditable/{{source_id}}"
+                hx-target="#div-{{form_param_name}}" class="paper-btn margin">Cancel edit</label>
+        </div>
+    </div>
+    {{ annotation_error(error) }}
+</div>
+{%- endmacro %}
+
+{% macro audio_box(audio_file) -%}
+<div class="row border border-danger" id="div-{{form_param_name}}">
+    {% if audio_file %}
+    <audio controls src="/audio_file/{{audio_file}}"></audio>
+    {% endif %}
+</div>
+{%- endmacro %}
+
+{% macro basic_image(image, form_param_name, source_id) -%}
+<div class="row border border-danger" id="div-{{form_param_name}}">
+    <div class="col-4 col">
+        {% if image %}
+        <img style="max-width: 300px" src="/audio_file/{{image}}" />
+        {% else %}
+        <img style="max-width: 300px" src="/static/no_image.png" />
+        {% endif %}
+    </div>
+</div>
+{%- endmacro %}
+
+
+{% macro upload_tmp_file(file_category, source_id) -%}
+<div class="row border border-danger" id="div-upload-tmp-file-{{file_category}}">
+    <form hx-post="/fl_line_upload_tmp_file/{{source_id}}?file_category={{file_category}}" enctype="multipart/form-data"
+        hx-target="#div-upload-tmp-file-{{file_category}}" hx-swap="outerHTML">
+        <input type="file" name="tmp-file" autocomplete="off" onchange="htmx.trigger(this.form, 'submit')" />
+    </form>
+</div>
+{%- endmacro %}

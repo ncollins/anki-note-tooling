@@ -1,0 +1,10 @@
+{# The live answer to "would saving this be rejected?": the message, plus the save button
+   swapped out of band so a known-bad annotation cannot be submitted. The button is only
+   ever disabled from here, so with htmx unavailable the form still submits and the server
+   still rejects it. #}
+{% import 'fl_line/macros.html.j2' as macros %}
+
+{{ macros.annotation_error(annotation_error) }}
+
+<button hx-swap-oob="true" id="save-annotation" class="btn-success"
+    {% if annotation_error %}disabled{% endif %}>Save</button>

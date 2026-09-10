@@ -1,0 +1,10 @@
+[source]
+name     = "podcast"
+language = "ja"
+slots    = ["written", "reading", "roman"]   # what a [[a::b::c]] annotation captures, in order
+notes    = ["cloze", "phrase"]               # which recipes this source generates
+
+# Omit this block entirely and the line details page offers no image picker.
+[source.images]
+match     = "$character_name"   # a line variable, compared against image_pool_entry.key
+refine_by = "scene"             # narrow to entries agreeing with the current image here

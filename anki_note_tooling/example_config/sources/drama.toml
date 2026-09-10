@@ -1,0 +1,10 @@
+[source]
+name     = "drama"
+language = "zh-yue"
+slots    = ["written", "reading"]
+notes    = ["phrase"]
+volume_scale_percentage = 150   # this source's audio is quiet relative to the rest
+
+# Neither `match` nor `refine_by`: the picker offers the whole pool. Appropriate where the
+# lines carry nothing for `match` to compare against.
+[source.images]

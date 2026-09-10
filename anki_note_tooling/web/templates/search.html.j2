@@ -1,0 +1,63 @@
+{% extends "base.html.j2" %}
+{% block content %}
+<h1>Search for lines.</h1>
+
+<form method="get" action="/search">
+    <div class="row" style="justify-content:flex-start;align-items:center;">
+        <label>Query:</label>
+        <input name="query" type="text" value="{{ query or '' }}" autocomplete="search phrase" />
+        <label>Exclude lines in Anki:</label>
+        <input name="exclude_inserted" type="checkbox" {% if filters.exclude_inserted %}checked{% endif %} />
+        <button>Search!</button>
+    </div>
+
+    <fieldset>
+        <legend>Sources</legend>
+        <div class="row" style="justify-content:flex-start;align-items:center;">
+            {% for name, line_count in source_type_counts %}
+            <label class="paper-check" style="margin-right:1.5rem;">
+                <input name="source" type="checkbox" value="{{ name }}"
+                    {% if name in filters.source_types %}checked{% endif %} />
+                <span>{{ name }} ({{ "{:,}".format(line_count) }})</span>
+            </label>
+            {% endfor %}
+        </div>
+        <p><small>Leave all unticked to search every source.</small></p>
+    </fieldset>
+
+    <fieldset>
+        <legend>Language and metadata</legend>
+        <div class="row" style="justify-content:flex-start;align-items:center;">
+            <label>Language:</label>
+            <select name="language">
+                <option value="">(any)</option>
+                {% for language, line_count in languages %}
+                <option value="{{ language }}"
+                    {% if filters.language == language %}selected{% endif %}>
+                    {{ language }} ({{ "{:,}".format(line_count) }})
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="row" style="justify-content:flex-start;align-items:center;">
+            {% for field in misc_fields %}
+            <label>{{ field.value.replace('_', ' ').title() }}:</label>
+            <input name="{{ field.value }}" type="text" autocomplete="off"
+                value="{{ filters[field.value] or '' }}"
+                list="{{ field.value }}-suggestions"
+                hx-get="/search/suggest?field={{ field.value }}"
+                hx-trigger="keyup changed delay:300ms"
+                hx-include="[name='source']"
+                hx-target="#{{ field.value }}-suggestions"
+                hx-swap="outerHTML" />
+            <datalist id="{{ field.value }}-suggestions"></datalist>
+            {% endfor %}
+        </div>
+        <p><small>Metadata fields match anywhere in the value, not just the start.</small></p>
+    </fieldset>
+</form>
+
+{% if searched %}
+    {% include "search_results.html.j2" %}
+{% endif %}
+{% endblock %}

@@ -1,0 +1,24 @@
+{% import 'fl_line/macros.html.j2' as macros %}
+
+{{ macros.upload_tmp_file(file_category=file_category, source_id=source_id) }}
+
+<input hx-swap-oob="true" 
+    type="text" 
+    id="update-form-{{file_category}}"
+    name="update-form-{{file_category}}" value="{{file_path}}" />
+
+{% if file_category == "image-file" %}
+
+<div hx-swap-oob="true"
+    id="image-wrapper">
+    {{ macros.basic_image(image=file_path, form_param_name="image-file", source_id=source_id) }}
+</div>
+
+{% else %}
+
+<div hx-swap-oob="true"
+    id="audio-wrapper">
+    {{ macros.audio_box(file_path) }}
+</div>
+
+{% endif %}
