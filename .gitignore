@@ -15,4 +15,5 @@ dist/
 
 .DS_Store
 
+**/.vscode
 **/.ackrc
